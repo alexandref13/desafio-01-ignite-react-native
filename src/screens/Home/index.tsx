@@ -42,8 +42,6 @@ export function Home() {
     setTasks((prevState) => {
       return prevState.map((task) => {
         if (task.id === id) {
-          console.log(task);
-
           return {
             id: task.id,
             title: task.title,
@@ -66,6 +64,12 @@ export function Home() {
     const finishedTasks = tasks.filter((task) => task.isFinished === true);
 
     setTasksFinished(finishedTasks.length);
+
+    const newArrayOfTasks = tasks.sort(
+      (a, b) => Number(a.isFinished) - Number(b.isFinished),
+    );
+
+    setTasks(newArrayOfTasks);
   }, [tasks]);
 
   return (

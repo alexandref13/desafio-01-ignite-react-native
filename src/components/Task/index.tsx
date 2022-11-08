@@ -2,6 +2,7 @@ import { Pressable, Text, View } from 'react-native';
 import { Trash, Check } from 'phosphor-react-native';
 
 import { styles } from './styles';
+
 import { TasksProps } from '../../screens/Home';
 
 interface TaskProps {
@@ -23,7 +24,18 @@ export function Task({
       >
         {data.isFinished ? <Check color="#fff" /> : null}
       </Pressable>
-      <Text style={styles.title}>{data.title}</Text>
+      <Text
+        style={
+          data.isFinished
+            ? [
+                styles.title,
+                { textDecorationLine: 'line-through', color: '#808080' },
+              ]
+            : styles.title
+        }
+      >
+        {data.title}
+      </Text>
       <Pressable onPress={() => handleDeleteTask(data.id)}>
         <Trash color="#808080" size={24} />
       </Pressable>
