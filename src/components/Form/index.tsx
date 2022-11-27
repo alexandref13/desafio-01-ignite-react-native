@@ -17,7 +17,7 @@ export function Form({ handleAddTask }: FormProps) {
       <TextInput
         style={styles.input}
         placeholder="Adicione uma nova tarefa"
-        onChangeText={(text) => setTitle(text)}
+        onChangeText={setTitle}
         autoCapitalize="words"
         placeholderTextColor="#808080"
       />

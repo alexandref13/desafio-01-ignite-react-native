@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect, useReducer } from 'react';
 import { FlatList, View } from 'react-native';
 import { EmptyList } from '../../components/EmptyList';
 import { Form } from '../../components/Form';
@@ -7,6 +6,15 @@ import { Form } from '../../components/Form';
 import { Header } from '../../components/Header';
 import { TabBar } from '../../components/TabBar';
 import { Task } from '../../components/Task';
+import {
+  addNewTask,
+  deleteTask,
+  getTasksFinished,
+  markTaskAsFinished,
+  orderTasks,
+} from '../../reducers/tasks/actions';
+
+import { tasksReducer } from '../../reducers/tasks/reducer';
 
 import { styles } from './styles';
 
@@ -17,59 +25,30 @@ export interface TasksProps {
 }
 
 export function Home() {
-  const [tasks, setTasks] = useState<TasksProps[]>([
-    {
-      id: Math.random().toString(),
-      title: 'Task nova',
-      isFinished: false,
-    },
-  ]);
+  const [tasksState, dispatch] = useReducer(tasksReducer, {
+    tasks: [],
+    tasksFinished: 0,
+  });
 
-  const [tasksFinished, setTasksFinished] = useState(0);
+  const { tasks, tasksFinished } = tasksState;
 
   async function handleAddTask(title: string) {
-    setTasks((prevState) => [
-      ...prevState,
-      {
-        id: Math.random().toString(),
-        title,
-        isFinished: false,
-      },
-    ]);
+    dispatch(addNewTask(title));
   }
 
   async function handleFinishedTask(id: string) {
-    setTasks((prevState) => {
-      return prevState.map((task) => {
-        if (task.id === id) {
-          return {
-            id: task.id,
-            title: task.title,
-            isFinished: !task.isFinished,
-          };
-        } else {
-          return task;
-        }
-      });
-    });
+    dispatch(markTaskAsFinished(id));
   }
 
   async function handleDeleteTask(id: string) {
-    setTasks((prevState) => {
-      return prevState.filter((task) => task.id !== id);
-    });
+    dispatch(deleteTask(id));
   }
 
   useEffect(() => {
-    const finishedTasks = tasks.filter((task) => task.isFinished === true);
+    console.log('aaa');
 
-    setTasksFinished(finishedTasks.length);
-
-    const newArrayOfTasks = tasks.sort(
-      (a, b) => Number(a.isFinished) - Number(b.isFinished),
-    );
-
-    setTasks(newArrayOfTasks);
+    dispatch(orderTasks());
+    dispatch(getTasksFinished());
   }, [tasks]);
 
   return (
